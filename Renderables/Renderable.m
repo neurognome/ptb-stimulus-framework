@@ -29,12 +29,9 @@ classdef Renderable < FrameworkObject
             out = obj.renderer.getWindow();
         end
 
-        function out = getRect(obj, vtx)
-            % I don't really like this.. need to think of better ways to pass the IFI/win etc between renderable and renderer
-            if nargin < 2 || isempty(vtx)
-                vtx = [1:4];
-            end            
-            out = obj.renderer.getRect(vtx);
+        function out = getRect(obj, varargin)
+            % I don't really like this.. need to think of better ways to pass the IFI/win etc between renderable and renderer       
+            out = obj.renderer.getRect(varargin{:});
         end
 
         function out = getTime(obj)
