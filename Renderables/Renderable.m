@@ -1,6 +1,7 @@
 classdef Renderable < FrameworkObject
     properties
         renderer
+        description
     end
 
     methods

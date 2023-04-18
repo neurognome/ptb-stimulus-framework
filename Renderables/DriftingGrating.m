@@ -55,6 +55,7 @@ classdef DriftingGrating < Renderable
             obj.rotate_mode = kPsychUseTextureMatrixForRotation;
             obj.phase_increment = (obj.temp_freq * 360) * obj.getIFI();
             obj.gratingtex = CreateProceduralSineGrating(obj.getWindow(), obj.patch_size, obj.patch_size, [0.5 0.5 0.5 0.0]);
+            obj.description = sprintf('Drifting grating: \%d deg', obj.ori)
         end
 
         function draw(obj, t_close)

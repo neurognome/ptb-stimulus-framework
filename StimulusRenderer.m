@@ -22,11 +22,10 @@ classdef StimulusRenderer < FrameworkObject
     methods % all these methods need to take tclose as the input argument
         function obj = StimulusRenderer(renderable, timer)
             if nargin < 2 || isempty(timer)
-                timer = StimulusTimer();
+                timer = SimpleTimer();
             end
             obj.timer = timer
             obj.renderable = renderable;
-            
         end
         
         function initialize(obj, manager, screen_id)
@@ -35,8 +34,6 @@ classdef StimulusRenderer < FrameworkObject
                 screen_id = obj.screen_id;
             end
 
-            obj.timer = manager.timer;
-            
             % Skip sync test
             Screen('Preference','SkipSyncTests',1);
             Screen('Preference','VisualDebugLevel',0);
@@ -105,8 +102,9 @@ classdef StimulusRenderer < FrameworkObject
             return
         end
 
-        function drawStimulus(obj, idx, t_close)
-            
+        function drawStimulus(obj, idx, duration)
+            obj.msgPrinter(obj.renderable(idx).description)
+            t_close = obj.getTime() + duration;
             obj.renderable(idx).draw(t_close);
         end
     
