@@ -39,7 +39,7 @@ classdef StimulusManager < handle
 				case '2P'
 					obj.triggerer = TwoPhotonTriggerer();
 			end
-			obj.renderer = StimulusRenderer(renderable);
+			obj.renderer = StimulusRenderer(renderable, obj);
 		end
 
 		function setScreenID(obj, id)
@@ -51,7 +51,7 @@ classdef StimulusManager < handle
 			obj.logger.initialize();
 			obj.triggerer.initialize(obj.timer.getStimulusDuration()); % Pass into the triggerer
 			obj.timer.initialize();
-			obj.renderer.initialize(obj);
+			obj.renderer.initialize();
 
 			obj.logDefaults();
 		end

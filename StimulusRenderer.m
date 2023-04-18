@@ -11,7 +11,7 @@ classdef StimulusRenderer < FrameworkObject
     end
     
     properties (Access = protected)
-        timer_handle % handle to the timer
+        timer % handle to the timer
         window % pointer to psychtoolbox's window
         ifi % inter-frame-interval for timing
         rect % rectangle on the window to draw to
@@ -20,8 +20,13 @@ classdef StimulusRenderer < FrameworkObject
     end
     
     methods % all these methods need to take tclose as the input argument
-        function obj = StimulusRenderer(renderable)
+        function obj = StimulusRenderer(renderable, timer)
+            if nargin < 2 || isempty(timer)
+                timer = StimulusTimer();
+            end
+            obj.timer = timer
             obj.renderable = renderable;
+            
         end
         
         function initialize(obj, manager, screen_id)
@@ -30,7 +35,7 @@ classdef StimulusRenderer < FrameworkObject
                 screen_id = obj.screen_id;
             end
 
-            obj.timer_handle = manager.timer;
+            obj.timer = manager.timer;
             
             % Skip sync test
             Screen('Preference','SkipSyncTests',1);
@@ -86,7 +91,7 @@ classdef StimulusRenderer < FrameworkObject
             % Draw a blank rectabgle with user-defined brightness
             Screen('FillRect', obj.window, obj.background*255, obj.rect);
             
-            % Update some grating animation parameters:
+            Update some grating animation param wheeleters:
             vbl = Screen('Flip', obj.window);
             
             while obj.getTime() < t_close
@@ -101,6 +106,7 @@ classdef StimulusRenderer < FrameworkObject
         end
 
         function drawStimulus(obj, idx, t_close)
+            
             obj.renderable(idx).draw(t_close);
         end
     
@@ -125,7 +131,7 @@ classdef StimulusRenderer < FrameworkObject
         end
 
         function time = getTime(obj)
-            time = obj.timer_handle.get();
+            time = obj.timer.get();
         end
     end   
 end
