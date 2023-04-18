@@ -22,3 +22,4 @@ methods
     function out = get(obj)
         out = GetSecs - obj.t_start;
     end
+end
