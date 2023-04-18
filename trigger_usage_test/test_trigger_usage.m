@@ -11,8 +11,9 @@ renderer.initialize(); % pass a timer, but do we need it? probably...
 renderer.start();
 
 % wait for trigger, should be an ID
-idx=1
-renderer.drawStimulus(idx, 3) % for 3 seconds
+for idx = 1:5
+renderer.drawStimulus(idx, 1) % for 3 seconds
 pause(2) % 2 seconds wait
+end
 
 renderer.finish();

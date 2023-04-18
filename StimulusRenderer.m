@@ -86,13 +86,20 @@ classdef StimulusRenderer < FrameworkObject
             close all;
         end
 
+        function blankScreen(obj)
+            Screen('FillRect', obj.window, obj.background*255, obj.rect);
+            Screen('Flip', obj.window);
+            Screen('DrawingFinished', obj.window);
+            return
+        end
+
         function drawBlank(obj, t_close)
             % From MG Matlab function "DrawBlank.m"
             
             % Draw a blank rectabgle with user-defined brightness
             Screen('FillRect', obj.window, obj.background*255, obj.rect);
             
-            Update some grating animation param wheeleters:
+            %Update some grating animation param wheeleters:
             vbl = Screen('Flip', obj.window);
             
             while obj.getTime() < t_close
@@ -110,6 +117,7 @@ classdef StimulusRenderer < FrameworkObject
             obj.msgPrinter(obj.renderable(idx).description)
             t_close = obj.getTime() + duration;
             obj.renderable(idx).draw(t_close);
+            obj.blankScreen()
         end
     
         % Getters
