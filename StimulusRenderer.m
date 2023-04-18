@@ -5,6 +5,12 @@ classdef StimulusRenderer < FrameworkObject
     % Written 20Jan2020 KS
     % Updated 14Feb2020
     %}
+    properties (Constant = true)
+        SCREEN_WIDTH_CM = 10;
+        SCREEN_X_PIXELS = 1920;
+        SCREEN_DISTANCE_CM = 5;
+    end
+
     properties
         screen_id = 0; % Which display to present things on
         background = 0.5; % Default background brightness
@@ -162,6 +168,14 @@ classdef StimulusRenderer < FrameworkObject
         end
         function time = getTime(obj)
             time = obj.timer.get();
+        end
+
+        % conversions
+        function pix = deg2pix(obj, deg)
+            visang_rad = 2 * atan(obj.SCREEN_WIDTH_CM/2/obj.SCREEN_DISTANCE_CM);
+            visang_deg = visang_rad * (180/pi);
+            pix_pervisang = obj.SCREEN_X_PIXELS / visang_deg;
+            pix = round(deg * pix_pervisang);
         end
     end   
 end
