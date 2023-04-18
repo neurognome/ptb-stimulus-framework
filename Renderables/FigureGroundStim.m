@@ -1,11 +1,12 @@
-classdef DriftingGrating < Renderable
+classdef FigureGroundStim < Renderable
     properties
         ori
         spat_freq
         temp_freq
         contrast
         phase
-        size
+        figure_sz
+        ground_sz
     end
 
     properties (Access = protected)
@@ -17,7 +18,7 @@ classdef DriftingGrating < Renderable
     end
 
     methods
-        function obj = DriftingGrating(ori, spat_freq, temp_freq, contrast, phase, figure_sz, ground_sz)
+        function obj = FigureGroundStim(ori, spat_freq, temp_freq, contrast, phase, figure_sz, ground_sz)
             % Setting default parameters
             if nargin < 1 || isempty(ori)
                 ori = 0;
