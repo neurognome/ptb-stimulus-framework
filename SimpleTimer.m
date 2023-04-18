@@ -23,3 +23,4 @@ methods
         out = GetSecs - obj.t_start;
     end
 end
+end

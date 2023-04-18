@@ -6,7 +6,7 @@ classdef StimulusRenderer < FrameworkObject
     % Updated 14Feb2020
     %}
     properties
-        screen_id = 1; % Which display to present things on
+        screen_id = 0; % Which display to present things on
         background = 0.5; % Default background brightness
     end
     
@@ -24,16 +24,16 @@ classdef StimulusRenderer < FrameworkObject
             if nargin < 2 || isempty(timer)
                 timer = SimpleTimer();
             end
-            obj.timer = timer
+            obj.timer = timer;
             obj.renderable = renderable;
         end
         
-        function initialize(obj, manager, screen_id)
+        function initialize(obj, screen_id)
             %% Initializes psychtoolbox and gets everything set up properly...
-            if nargin < 3 || isempty(screen_id)
+            if nargin < 2 || isempty(screen_id)
                 screen_id = obj.screen_id;
             end
-
+            
             % Skip sync test
             Screen('Preference','SkipSyncTests',1);
             Screen('Preference','VisualDebugLevel',0);
@@ -73,6 +73,10 @@ classdef StimulusRenderer < FrameworkObject
         function setScreenID(obj, screen_id)
             % For changing screen ID
             obj.screen_id = screen_id;
+        end
+        
+        function start(obj)
+            obj.timer.start();
         end
         
         function finish(obj)
