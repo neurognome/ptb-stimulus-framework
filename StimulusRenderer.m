@@ -133,13 +133,30 @@ classdef StimulusRenderer < FrameworkObject
             out = obj.window;
         end
 
-        function out = getRect(obj, vtx)
+        function out = getRect_old(obj, vtx)
             if nargin < 2 || isempty(vtx)
                 vtx = [1:4];
             end
             out = obj.rect(vtx);
         end
 
+        function out = getRect(obj, sz, pos)
+            if nargin < 2 || isempty(sz)
+                sz = obj.rect[3, 4];
+            end
+
+            if nargin < 3 || isempty(pos)
+                pos = [0, 0]; % x, y centered
+            end
+
+            % center
+            center = [(obj.rect[3] - obj.rect[1])/2, (obj.rect[4] - obj.rect[2]/2)]
+            xl = center[1] - sz[1]/2;
+            xh = center[1] + sz[1]/2;
+            yl = center[2] - sz[2]/2;
+            yh = center[2] + sz[2]/2;
+            out = round([xl, yl, xh, yh])
+        end
         function time = getTime(obj)
             time = obj.timer.get();
         end

@@ -16,7 +16,7 @@ classdef DriftingGrating < Renderable
     end
 
     methods
-        function obj = DriftingGrating(ori, spat_freq, temp_freq, contrast, phase, patch_size)
+        function obj = DriftingGrating(ori, spat_freq, temp_freq, contrast, phase, size)
             % Setting default parameters
             if nargin < 1 || isempty(ori)
                 ori = 0;
@@ -38,16 +38,13 @@ classdef DriftingGrating < Renderable
                 phase = 0;
             end
             
-            if nargin < 6 || isempty(patch_size)
-                patch_size = 1000; %pixels
-            end
-
             obj.ori = ori;
             obj.spat_freq = spat_freq;
             obj.temp_freq = temp_freq;
             obj.contrast = contrast;
             obj.phase = phase;
-            obj.patch_size = patch_size;
+            obj.patch_size = 2000; % big
+            obj.size = size
         end
 
         function initialize(obj)
@@ -67,7 +64,7 @@ classdef DriftingGrating < Renderable
                 phase = phase + obj.phase_increment;
                 
                 % Draw the grating:
-                Screen('DrawTexture',obj.getWindow(), obj.gratingtex, obj.getRect(), obj.getRect(), obj.ori, [], [], [], [], obj.rotate_mode, [phase, obj.spat_freq, obj.amplitude, 0]);
+                Screen('DrawTexture',obj.getWindow(), obj.gratingtex, obj.getRect(), obj.getRect(), obj.ori, [], [], [], [], obj.rotate_mode, [phase, obj.spat_freq, obj.amplitude, 0]); % subsample
                 Screen('DrawingFinished', obj.getWindow());
                 % Show it at next retrace:
                 vbl = Screen('Flip', obj.getWindow(), vbl + 0.5 * obj.getIFI());
