@@ -6,9 +6,9 @@ classdef StimulusRenderer < FrameworkObject
     % Updated 14Feb2020
     %}
     properties (Constant = true)
-        SCREEN_WIDTH_CM = 10;
-        SCREEN_X_PIXELS = 1920;
-        SCREEN_DISTANCE_CM = 5;
+        SCREEN_HEIGHT_CM = 10;
+        SCREEN_Y_PIXELS = 1600; % for retina display
+        SCREEN_DISTANCE_CM = 10;
     end
 
     properties
@@ -149,10 +149,15 @@ classdef StimulusRenderer < FrameworkObject
         function out = getRect(obj, sz, pos)
             if nargin < 2 || isempty(sz) || isnan(sz)
                 sz = obj.rect([3, 4]);
+            else
+                sz = obj.deg2pix(sz);
+                
             end
 
             if nargin < 3 || isempty(pos)
                 pos = [(obj.rect(3) - obj.rect(1))/2, (obj.rect(4) - obj.rect(2))/2]; % x, y centered
+            else
+                pos = obj.deg2pix(pos);
             end
 
             if numel(sz) < 2
@@ -172,9 +177,9 @@ classdef StimulusRenderer < FrameworkObject
 
         % conversions
         function pix = deg2pix(obj, deg)
-            visang_rad = 2 * atan(obj.SCREEN_WIDTH_CM/2/obj.SCREEN_DISTANCE_CM);
-            visang_deg = visang_rad * (180/pi);
-            pix_pervisang = obj.SCREEN_X_PIXELS / visang_deg;
+            visang_deg = atand(obj.SCREEN_HEIGHT_CM/obj.SCREEN_DISTANCE_CM);
+%             visang_deg = 2 * atand(obj.SCREEN_HEIGHT_CM/2/obj.SCREEN_DISTANCE_CM);
+            pix_pervisang = obj.SCREEN_Y_PIXELS / visang_deg;
             pix = round(deg * pix_pervisang);
         end
     end   
