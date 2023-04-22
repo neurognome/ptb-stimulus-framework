@@ -2,24 +2,30 @@
 % on/off info to daq.
 % Also attempts to send a binary pulse output that indicates the stim ID.
 clear
+sca
 
 daqtrig=0;
 % just get a renderer going?
-orientation_list = [0:45:135];
-sz_list = round(linspace(100, 1000, length(orientation_list)));
-% visDeg2px(10,10,15,
+orientation_list = 0:45:135;
+sz_list = [6, 12, 24, 50];
 c=0;
-% for ori = 1:numel(orientation_list)
-%     c=c+1;
-%     stimulus(c) = DriftingGrating(orientation_list(ori), [], [], [], [], sz_list(ori));
-% end
-% for ori = 1:numel(orientation_list)
-%     c=c+1;
-%     stimulus(c) = FigureGroundStim(orientation_list(ori), [], [], [], [], 1000, 100);
-% end
+for ori = 1:numel(orientation_list)
+    for sz = 1:numel(sz_list)
+        c=c+1;
+        stimulus{c} = DriftingGrating(orientation_list(ori), [], [], [], [], sz_list(sz));
+    end
+end
 for ori = 1:numel(orientation_list)
     c=c+1;
-    stimulus(c) = HoleStim(orientation_list(ori), [], [], [], [], 15, 50);
+    stimulus{c} = FigureGroundStim(orientation_list(ori), [], [], [], [], 15, 50);
+end
+for ori = 1:numel(orientation_list)
+    c=c+1;
+    stimulus{c} = HoleStim(orientation_list(ori), [], [], [], [], 15*1.2, 50);
+end
+for i=1:6
+    c=c+1;
+    stimulus{c} = BlankScreen();
 end
 
 renderer = StimulusRenderer(stimulus); % can be an array of renderables?
@@ -54,7 +60,7 @@ s0.NumberOfScans = 2;
 s0.Rate = 10000;
 
 
-mxNumTrials = 10;
+mxNumTrials = 1000;
 
 % for simple case of random stimulus presentation
 % or do a while loop or whatever
@@ -63,6 +69,7 @@ for i=1:mxNumTrials
     
     % randomly choose a stimulus
     idx = randi(numel(stimulus));
+    disp(['stim id is ' num2str(idx)])
     
     if daqtrig
         try
@@ -82,7 +89,7 @@ for i=1:mxNumTrials
     
     outputSingleScan(dq, STIM_ON) % set stim indicators up
     renderer.drawStimulus(idx, 1)
-    outputSingleScan(dq,STIM_OFF) % set stim indicators down
+    outputSingleScan(dq, STIM_OFF) % set stim indicators down
     stimLog(i) = idx;
     
     binaryVec = decimalToBinaryVector(idx, 8);
@@ -103,6 +110,5 @@ for i=1:mxNumTrials
     end
     
 end
-disp('got  here')
+disp('got  here. finished.')
 renderer.finish();
-    

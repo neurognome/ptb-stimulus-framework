@@ -72,7 +72,7 @@ classdef StimulusRenderer < FrameworkObject
 
             % Inject information to the renderable
             for r = obj.renderable
-                r.setRenderer(obj);
+                r{:}.setRenderer(obj);
             end
         end
         
@@ -120,9 +120,9 @@ classdef StimulusRenderer < FrameworkObject
         end
 
         function drawStimulus(obj, idx, duration)
-            obj.msgPrinter(obj.renderable(idx).description)
+            obj.msgPrinter(obj.renderable{idx}.description)
             t_close = obj.getTime() + duration;
-            obj.renderable(idx).draw(t_close);
+            obj.renderable{idx}.draw(t_close);
             obj.blankScreen()
         end
     
