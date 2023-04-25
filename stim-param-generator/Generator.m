@@ -2,6 +2,7 @@ classdef Generator < handle
     
     properties
         output
+        parameters
     end
     
     properties (Hidden)
