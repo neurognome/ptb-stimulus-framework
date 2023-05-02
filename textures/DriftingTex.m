@@ -1,4 +1,4 @@
-classdef DriftingTex < GratingFactory & Renderable
+classdef DriftingTex < GratingFactory% & Renderable
     properties
         drifting = 1;
     end
