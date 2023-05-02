@@ -4,7 +4,10 @@
 clear
 sca
 
-daqtrig=0;
+mouse = 'w58_1';
+exp = '5post_combined_size_ori_fg';
+
+daqtrig=1;
 % just get a renderer going?
 orientation_list = 0:45:135;
 sz_list = [6, 12, 24, 50];
@@ -60,7 +63,7 @@ s0.NumberOfScans = 2;
 s0.Rate = 10000;
 
 
-mxNumTrials = 1000;
+mxNumTrials = 2000;
 
 % for simple case of random stimulus presentation
 % or do a while loop or whatever
@@ -81,6 +84,11 @@ for i=1:mxNumTrials
             disp('daq start trigger timed out...')
             % cleanup and save what's been done
             renderer.finish();
+            save_folder_local = 'd:/will/'; % ends with /
+            save_folder_remote = 'm:/Will/pt data/'; % ends with /
+            save_name = [date '_' mouse '_' exp '.mat'];
+            save([save_folder_local save_name], 'stimLog', 'stimulus', '-v7.3')
+            save([save_folder_remote save_name], 'stimLog', 'stimulus', '-v7.3')
             return
         end
     else
@@ -112,3 +120,9 @@ for i=1:mxNumTrials
 end
 disp('got  here. finished.')
 renderer.finish();
+
+save_folder_local = 'd:/will/'; % ends with /
+save_folder_remote = 'm:/Will/pt data/'; % ends with /
+save_name = [date '_' mouse '_' exp '.mat'];
+save([save_folder_local save_name], 'stimLog', 'stimulus', '-v7.3')
+save([save_folder_remote save_name], 'stimLog', 'stimulus', '-v7.3')
