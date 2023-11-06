@@ -6,7 +6,7 @@ orientation_list = [0:30:330];
 % end
 
 for ori = 1:numel(orientation_list)
-    stimulus(ori) = FigureGroundStim(orientation_list(ori), [], [], [], [], 100, []);
+    stimulus{ori} = FigureGroundStim(orientation_list(ori), [], [], [], [], 100, []);
 end
 
 renderer = StimulusRenderer(stimulus); % can be an array of renderables?
