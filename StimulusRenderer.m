@@ -18,13 +18,14 @@ classdef StimulusRenderer < FrameworkObject
         dq = []
     end
     
-    properties (Access = protected)
+    properties (Access = public)
         timer % handle to the timer
         window % pointer to psychtoolbox's window
         ifi % inter-frame-interval for timing
         rect % rectangle on the window to draw to
 
         renderable
+        done = false;
     end
     
     methods % all these methods need to take tclose as the input argument
@@ -51,10 +52,11 @@ classdef StimulusRenderer < FrameworkObject
             end
 
             if ~isempty(obj.dq)
+                obj.dq.addinput('Dev1', 'ai0', 'Voltage');
                 obj.dq.addtrigger('Digital', 'StartTrigger', 'External', 'Dev1/PFI1');
                 
                 % configure
-                obj.dq.DigitalTriggerTimeout = 20;
+                obj.dq.DigitalTriggerTimeout = 10;
                 obj.dq.NumDigitalTriggersPerRun = 1;
             end
             
@@ -90,7 +92,7 @@ classdef StimulusRenderer < FrameworkObject
 
             % Inject information to the renderable
             for r = obj.renderable
-                r.setRenderer(obj);
+                r{:}.setRenderer(obj);
             end
         end
         
@@ -137,23 +139,33 @@ classdef StimulusRenderer < FrameworkObject
             return
         end
 
-        function prep(obj, idx, duration)
-            obj.ScansAvailableFcn = @(obj, idx, duration) drawStimulus(obj, idx, duration);
-            if ~isempty(obj.dq)
-                obj.dq.start(0.001);
-                 %wait for a trigger? idx... gotta test
+        function drawStimulus(obj, idx, duration)
+            if isempty(idx)
+                obj.done = true;
+                return
+            end
+            
+            obj.dq.start();
+            waitfor(obj.dq, 'WaitingForDigitalTrigger', 0);
+            
+            obj.msgPrinter(obj.renderable{idx}.description)
+            t_close = obj.getTime() + duration;
+            obj.renderable{idx}.draw(t_close);
+            obj.blankScreen()
+            obj.dq.stop();
+            obj.dq.flush();
+        end
+        
+        function out = run(obj)
+            out = true;
+            if isempty(obj.dq)
+                pause(1)
             else
-                obj.drawStimulus(idx, duration);
+                if obj.done
+                    out = false;
+                end
             end
         end
-
-        function drawStimulus(obj, idx, duration)
-            obj.msgPrinter(obj.renderable(idx).description)
-            t_close = obj.getTime() + duration;
-            obj.renderable(idx).draw(t_close);
-            obj.blankScreen()
-        end
-    
         % Getters
         function out = getScreenID(obj)
             out = obj.screen_id;
