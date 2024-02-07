@@ -14,6 +14,8 @@ classdef StimulusRenderer < FrameworkObject
     properties
         screen_id = 0; % Which display to present things on
         background = 0.5; % Default background brightness
+
+        dq = []
     end
     
     properties (Access = protected)
@@ -26,18 +28,34 @@ classdef StimulusRenderer < FrameworkObject
     end
     
     methods % all these methods need to take tclose as the input argument
-        function obj = StimulusRenderer(renderable, timer)
-            if nargin < 2 || isempty(timer)
+        function obj = StimulusRenderer(renderable, trigger, timer)
+            if nargin < 2 || isempty(trigger)
+                trigger = false;
+            end
+
+            if nargin < 3 || isempty(timer)
                 timer = SimpleTimer();
             end
             obj.timer = timer;
             obj.renderable = renderable;
+
+            if trigger
+                obj.dq = daq('ni');
+            end
         end
         
         function initialize(obj, screen_id)
             %% Initializes psychtoolbox and gets everything set up properly...
             if nargin < 2 || isempty(screen_id)
                 screen_id = obj.screen_id;
+            end
+
+            if ~isempty(obj.dq)
+                obj.dq.addtrigger('Digital', 'StartTrigger', 'External', 'Dev1/PFI1');
+                
+                % configure
+                obj.dq.DigitalTriggerTimeout = 20;
+                obj.dq.NumDigitalTriggersPerRun = 1;
             end
             
             % Skip sync test
@@ -117,6 +135,16 @@ classdef StimulusRenderer < FrameworkObject
                 vbl = Screen('Flip', obj.window, vbl + 0.5 * obj.ifi);
             end
             return
+        end
+
+        function prep(obj, idx, duration)
+            obj.ScansAvailableFcn = @(obj, idx, duration) drawStimulus(obj, idx, duration);
+            if ~isempty(obj.dq)
+                obj.dq.start(0.001);
+                 %wait for a trigger? idx... gotta test
+            else
+                obj.drawStimulus(idx, duration);
+            end
         end
 
         function drawStimulus(obj, idx, duration)
