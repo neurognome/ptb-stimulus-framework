@@ -144,16 +144,18 @@ classdef StimulusRenderer < FrameworkObject
                 obj.done = true;
                 return
             end
-            
+            if ~isempty(obj.dq)
             obj.dq.start();
             waitfor(obj.dq, 'WaitingForDigitalTrigger', 0);
-            
+            end
             obj.msgPrinter(obj.renderable{idx}.description)
             t_close = obj.getTime() + duration;
             obj.renderable{idx}.draw(t_close);
             obj.blankScreen()
+            if ~isempty(obj.dq)
             obj.dq.stop();
             obj.dq.flush();
+            end
         end
         
         function out = run(obj)
